@@ -41,8 +41,6 @@
 #include "Param.h"
 //edit here
 #include "formula.h"
-#include <ctime>
-#include <iostream>
 
 Param::Param() {
 	/* MNIST dataset */
@@ -58,8 +56,7 @@ Param::Param() {
 	nOutput = 10;     // # of neurons in output layer
 	alpha1 = 0.4;	// Learning rate for the weights from input to hidden layer
 	alpha2 = 0.2;	// Learning rate for the weights from hidden to output layer
-	maxWeight = 1;	// Upper bound of weight value
-	minWeight = -1;	// Lower bound of weight value
+	
     /*Optimization method 
     Available option include: "SGD", "Momentum", "Adagrad", "RMSprop" and "Adam"*/
     optimization_type = "SGD";
@@ -87,25 +84,22 @@ Param::Param() {
 	processNode = 32;	// Technology node (nm)
 	clkFreq = 2e9;		// Clock frequency (Hz)
 
-	//zero shifting parameters...edit here
+	/*zero shifting, edit here*/
 	NL_LTP = 2.4;	// LTP nonlinearity
-	NL_LTD = -2.4;	// LTD nonlinearity
-	sigmaDtoD = 0;	// Sigma of device-to-device weight update vairation in gaussian distribution
-	gaussian_dist2 = new std::normal_distribution<double>(0, sigmaDtoD);	// Set up mean and stddev for device-to-device weight update vairation
-	maxNumLevelLTP = 100;
-	maxNumLevelLTD = 100; 
-	std::mt19937 localGen;
-	localGen.seed(std::time(0));
-	paramALTP = getParamA(NL_LTP + (*gaussian_dist2)(localGen)) * maxNumLevelLTP;	// Parameter A for LTP nonlinearity
-	paramALTD = getParamA(NL_LTD + (*gaussian_dist2)(localGen)) * maxNumLevelLTD;	// Parameter A for LTD nonlinearity
-	zeroShifting = true;
+	NL_LTD = -4.88;	// LTD nonlinearity
+	maxNumLevelLTP = 97;
+	maxNumLevelLTD = 100;
+	maxConductance = 3.8462e-8;
+	minConductance = 3.0769e-9;
+	paramALTP = getParamA(NL_LTP) * maxNumLevelLTP;	// Parameter A for LTP nonlinearity
+	paramALTD = getParamA(NL_LTD) * maxNumLevelLTD;	// Parameter A for LTD nonlinearity
 	paramBLTP = (maxConductance - minConductance) / (1 - exp(-maxNumLevelLTP/paramALTP));
 	paramBLTD = (maxConductance - minConductance) / (1 - exp(-maxNumLevelLTD/paramALTD));
-	double zeroPt = 0;
-	if(paramALTD != paramALTP && zeroShifting) {
-		zeroPt = ((maxWeight-minWeight)/(maxConductance-minConductance)*(paramBLTP/paramALTP-paramBLTD/paramALTD)+(minWeight/paramALTP)-(minWeight/paramALTD))/(1/paramALTP-1/paramALTD);
-		this->maxWeight = maxWeight+zeroPt;
-		this->minWeight = minWeight+zeroPt;
+	zeroPt = 0;
+	if(paramALTD != paramALTP){
+		zeroPt = zeroPt = ((maxWeight-minWeight)/(maxConductance-minConductance)*(paramBLTP/paramALTP-paramBLTD/paramALTD)+(minWeight/paramALTP)-(minWeight/paramALTD))/(1/paramALTP-1/paramALTD);
 	}
+	maxWeight = 1+zeroPt;	// Upper bound of weight value
+	minWeight = -1+zeroPt;	// Lower bound of weight value
 }
 
