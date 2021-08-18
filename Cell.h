@@ -169,17 +169,13 @@ class RealDevice: public AnalogNVM {
 public:
 	bool nonlinearWrite;	// Consider weight update nonlinearity or not
 	double xPulse;		// Conductance state in terms of the pulse number (doesn't need to be integer)
-	double NL_LTP;		// LTP nonlinearity
-	double NL_LTD;		// LTD nonlinearity
+	//edit here
 	double paramALTP;	// Parameter A for LTP nonlinearity
 	double paramBLTP;	// Parameter B for LTP nonlinearity
 	double paramALTD;	// Parameter A for LTD nonlinearity
 	double paramBLTD;	// Parameter B for LTD nonlinearity
-	double sigmaDtoD;	// Sigma of device-to-device variation on weight update nonliearity baseline
 	double sigmaCtoC;	// Sigma of cycle-to-cycle variation on weight update
-	//edit here
-	double zeroPt;
-	
+
 	RealDevice(int x, int y);
 	double Read(double voltage);	// Return read current (A)
 	void Write(double deltaWeightNormalized, double weight, double minWeight, double maxWeight);
