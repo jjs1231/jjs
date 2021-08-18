@@ -39,6 +39,8 @@
 #include <string>
 #include "math.h"
 #include "Param.h"
+//edit here
+#include "formula.h"
 
 Param::Param() {
 	/* MNIST dataset */
@@ -82,6 +84,26 @@ Param::Param() {
 	arrayWireWidth = 100;	// Array wire width (nm)
 	processNode = 32;	// Technology node (nm)
 	clkFreq = 2e9;		// Clock frequency (Hz)
- 
+
+	//zero shifting parameters...edit here
+	NL_LTP = 2.4;	// LTP nonlinearity
+	NL_LTD = -2.4;	// LTD nonlinearity
+	sigmaDtoD = 0;	// Sigma of device-to-device weight update vairation in gaussian distribution
+	gaussian_dist2 = new std::normal_distribution<double>(0, sigmaDtoD);	// Set up mean and stddev for device-to-device weight update vairation
+	maxNumLevelLTP = 100;
+	maxNumLevelLTD = 100; 
+	std::mt19937 localGen;
+	localGen.seed(std::time(0));
+	paramALTP = getParamA(NL_LTP + (*gaussian_dist2)(localGen)) * maxNumLevelLTP;	// Parameter A for LTP nonlinearity
+	paramALTD = getParamA(NL_LTD + (*gaussian_dist2)(localGen)) * maxNumLevelLTD;	// Parameter A for LTD nonlinearity
+	zeroShifting = true;
+	paramBLTP = (maxConductance - minConductance) / (1 - exp(-maxNumLevelLTP/paramALTP));
+	paramBLTD = (maxConductance - minConductance) / (1 - exp(-maxNumLevelLTD/paramALTD));
+	double zeroPt = 0;
+	if(paramALTD != paramALTP && zeroShifting) {
+		zeroPt = ((maxWeight-minWeight)/(maxConductance-minConductance)*(paramBLTP/paramALTP-paramBLTD/paramALTD)+(minWeight/paramALTP)-(minWeight/paramALTD))/(1/paramALTP-1/paramALTD)
+		this->maxWeight = maxWeight+zeroPt;
+		this->minWeight = minWeight+zeroPt;
+	}
 }
 
