@@ -101,7 +101,7 @@ Param::Param() {
 	paramBLTD = (maxConductance - minConductance) / (1 - exp(-maxNumLevelLTD/paramALTD));
 	double zeroPt = 0;
 	if(paramALTD != paramALTP && zeroShifting) {
-		zeroPt = ((maxWeight-minWeight)/(maxConductance-minConductance)*(paramBLTP/paramALTP-paramBLTD/paramALTD)+(minWeight/paramALTP)-(minWeight/paramALTD))/(1/paramALTP-1/paramALTD)
+		zeroPt = ((maxWeight-minWeight)/(maxConductance-minConductance)*(paramBLTP/paramALTP-paramBLTD/paramALTD)+(minWeight/paramALTP)-(minWeight/paramALTD))/(1/paramALTP-1/paramALTD);
 		this->maxWeight = maxWeight+zeroPt;
 		this->minWeight = minWeight+zeroPt;
 	}
