@@ -83,6 +83,18 @@ public:
 	double arrayWireWidth;	// Array wire width (nm)
 	int processNode;	// Technology node (nm)
 	double clkFreq;		// Clock frequency (Hz)
+	
+	// //zero shifting parameters...edit here
+	double NL_LTP;
+	double NL_LTD;
+	double paramALTP;	// Parameter A for LTP nonlinearity
+	double paramBLTP;	// Parameter B for LTP nonlinearity
+	double paramALTD;	// Parameter A for LTD nonlinearity
+	double paramBLTD;	// Parameter B for LTD nonlinearity
+	double sigmaDtoD;	// Sigma of device-to-device variation on weight update nonliearity baseline
+	bool zeroShifting;
+	double zeroPt;
+	std::normal_distribution<double> *gaussian_dist2;	// Normal distribution object
 };
 
 #endif
