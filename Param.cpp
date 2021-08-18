@@ -41,6 +41,8 @@
 #include "Param.h"
 //edit here
 #include "formula.h"
+#include <ctime>
+#include <iostream>
 
 Param::Param() {
 	/* MNIST dataset */
