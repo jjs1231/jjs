@@ -42,6 +42,9 @@
 #include "formula.h"
 #include "Array.h"
 #include "Cell.h"
+//edit here
+#include "Param.h"
+extern Param *param;
 
 
 /* General eNVM */
